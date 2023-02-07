@@ -1,10 +1,9 @@
 import cv2, kivy
+from tkinter import filedialog
 from kivy.app import App
 from kivy.uix.video import Video
 
 
-def test():
-    return ('Sources/forest1080.mp4')
 def show_video():
     video = cv2.VideoCapture('Sources/forest1080.mp4')
     while(video.isOpened()):
@@ -15,18 +14,21 @@ def show_video():
             break
 
 
-
 class MainApp(App):
     def build(self):
-        video = Video(source = 'Sources/forest1080.mp4')
-        video.state = "play"
-        video.options = {'eos':'loop'}
-        video.allow_stretch = True
+        folder = filedialog.askopenfilename()
+        if folder != "":
+            print(folder)
+            video = Video(source = 'Sources/forest1080.mp4')
+            video.state = "play"
+            video.options = {'eos':'loop'}
+            video.allow_stretch = True
+            return video
+        else:
+            print("ERR")
         
 
-        return video
 
-        
 
 if __name__ == "__main__":
     app = MainApp()
