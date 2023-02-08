@@ -1,0 +1,20 @@
+#:kivy 2.0.0
+<MainWindow>:
+    BoxLayout:
+        orientation: 'vertical'
+        size: root.width ,root.height
+        
+        Button:
+            text: "Choose video"
+            color: 0,0,0,1
+            on_press: root.choose_video_click()
+
+        Image:
+            id: searching_image
+            allow_stretch:True
+
+        VideoPlayer:
+            id: main_video
+            allow_stretch: True
+            state: 'play'
+
