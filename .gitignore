@@ -1,2 +1,4 @@
 venv
 Sources
+.idea
+__pycache__
