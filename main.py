@@ -1,7 +1,12 @@
 import sys
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import *
+from PyQt5.QtMultimedia import * 
+from PyQt5.QtMultimediaWidgets import * 
+from PyQt5.QtCore import *
+from PyQt5.QtGui import * 
+
 
 from Library import Library
 
@@ -14,11 +19,31 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
+        self.setFixedSize(843, 622)
         self._Library = Library
+        self.videoOutput = self.makeVideoWidget()
+        self.mediaPlayer = self.makeMediaPlayer()
+        self.mediaPlayer.setVolume(0)
+
+
+
         self.video_path.textChanged[str].connect(self.on_text_changed)
         self.image_path.textChanged[str].connect(self.on_text_changed)
         self.choose_image_btn.clicked.connect(self.choose_image_click)
         self.choise_video_btn.clicked.connect(self.choose_video_click)
+
+
+    def makeMediaPlayer(self):
+        mediaPlayer = QMediaPlayer()
+        mediaPlayer.setVideoOutput(self.videoOutput)
+        return mediaPlayer
+
+    def makeVideoWidget(self):
+        videoOutput = QVideoWidget(self)
+        vbox  = QVBoxLayout()
+        vbox.addWidget(videoOutput)
+        self.video_widget.setLayout(vbox)
+        return videoOutput 
 
     def choose_image_click(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Open file', None, "Image (*.png *.jpg *jpeg)")
@@ -33,11 +58,19 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self._Library.image_source = file_path
             self.video_path.setText(file_path)
 
+            self.mediaPlayer.setMedia(QMediaContent(QUrl(file_path)))
+            self.mediaPlayer.play()
+         
+
     def on_text_changed(self, text):
         if (self.video_path.text() != "") and (self.image_path.text() != ""):
             self.but_execute.setEnabled(True)
         else:
             self.but_execute.setEnabled(False)
+
+# create second fuct for textChandeg
+# insert in 2 func try exepct 
+
 
 
 if __name__ == "__main__":
