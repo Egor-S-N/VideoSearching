@@ -2,11 +2,10 @@ import sys
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import *
-from PyQt5.QtMultimedia import * 
-from PyQt5.QtMultimediaWidgets import * 
+from PyQt5.QtMultimedia import *
+from PyQt5.QtMultimediaWidgets import *
 from PyQt5.QtCore import *
-from PyQt5.QtGui import * 
-
+from PyQt5.QtGui import *
 
 from Library import Library
 
@@ -20,18 +19,18 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
         self.setFixedSize(843, 622)
-        self._Library = Library
+        self._Library = Library()
         self.videoOutput = self.makeVideoWidget()
         self.mediaPlayer = self.makeMediaPlayer()
         self.mediaPlayer.setVolume(0)
 
-
-
         self.video_path.textChanged[str].connect(self.on_text_changed)
         self.image_path.textChanged[str].connect(self.on_text_changed)
+
         self.choose_image_btn.clicked.connect(self.choose_image_click)
         self.choise_video_btn.clicked.connect(self.choose_video_click)
 
+        self.but_execute.clicked.connect(self.but_execute_click)
 
     def makeMediaPlayer(self):
         mediaPlayer = QMediaPlayer()
@@ -40,27 +39,29 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def makeVideoWidget(self):
         videoOutput = QVideoWidget(self)
-        vbox  = QVBoxLayout()
+        vbox = QVBoxLayout()
         vbox.addWidget(videoOutput)
         self.video_widget.setLayout(vbox)
-        return videoOutput 
+        return videoOutput
 
     def choose_image_click(self):
         file_path, _ = QFileDialog.getOpenFileName(self, 'Open file', None, "Image (*.png *.jpg *jpeg)")
         if file_path != "":
-            self._Library.video_source = file_path
+            self._Library.image_source = file_path
+
             self.image_path.setText(file_path)
             self.show_image.setPixmap(QPixmap(file_path))
 
     def choose_video_click(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Open file', None, "Image (*.mp4 *.avi *mov)")
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Open file', None, "Video (*.mp4 *.avi *.mov *.mkv)")
         if file_path != "":
-            self._Library.image_source = file_path
+            self._Library.video_source = file_path
+
+            print(self._Library.video_source)
             self.video_path.setText(file_path)
 
             self.mediaPlayer.setMedia(QMediaContent(QUrl(file_path)))
             self.mediaPlayer.play()
-         
 
     def on_text_changed(self, text):
         if (self.video_path.text() != "") and (self.image_path.text() != ""):
@@ -68,9 +69,12 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.but_execute.setEnabled(False)
 
+    def but_execute_click(self):
+        self._Library.show_video()
+
+
 # create second fuct for textChandeg
 # insert in 2 func try exepct 
-
 
 
 if __name__ == "__main__":
