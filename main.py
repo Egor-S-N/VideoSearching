@@ -12,7 +12,6 @@ from Library import Library
 qtcreator_file = "frame1.ui"
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtcreator_file)
 
-
 class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
