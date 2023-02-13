@@ -33,6 +33,9 @@
     </property>
    </widget>
    <widget class="QLineEdit" name="video_path">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -52,7 +55,7 @@
      <rect>
       <x>20</x>
       <y>20</y>
-      <width>240</width>
+      <width>119</width>
       <height>24</height>
      </rect>
     </property>
@@ -62,10 +65,13 @@
      </font>
     </property>
     <property name="text">
-     <string>Choose or write video path</string>
+     <string>Choose video</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="image_path">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -85,7 +91,7 @@
      <rect>
       <x>20</x>
       <y>290</y>
-      <width>247</width>
+      <width>126</width>
       <height>24</height>
      </rect>
     </property>
@@ -95,7 +101,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Choose or write image path</string>
+     <string>Choose image</string>
     </property>
    </widget>
    <widget class="QPushButton" name="choose_image_btn">
@@ -122,8 +128,11 @@
       <x>360</x>
       <y>300</y>
       <width>451</width>
-      <height>181</height>
+      <height>251</height>
      </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
     </property>
     <property name="frameShape">
      <enum>QFrame::NoFrame</enum>
@@ -141,7 +150,7 @@
       <x>360</x>
       <y>10</y>
       <width>451</width>
-      <height>231</height>
+      <height>251</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -200,6 +209,51 @@
       </spacer>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="play_btn">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>267</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Play</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pause_btn">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>459</x>
+      <y>267</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pause</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="restart_btn">
+    <property name="geometry">
+     <rect>
+      <x>558</x>
+      <y>267</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Replay</string>
+    </property>
    </widget>
   </widget>
  </widget>
