@@ -90,6 +90,12 @@ class Library:
                 corners = np.float32([[0, 0], [0, h], [w, h], [w, 0]]).reshape(-1, 1, 2)
                 current_corners = cv2.perspectiveTransform(corners, H)
                 frame = cv2.polylines(frame, [np.int32(current_corners)], True, (0, 0, 255), 2)
+                [np.int32(current_corners)[0]][0][0]
+                try:
+                    x,y = [np.int32(current_corners)[0]][0][0]
+                    cv2.putText(frame, "Object found", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 1 )
+                except:
+                    pass
 
             # Display the current frame
             cv2.imshow('Video', frame)
