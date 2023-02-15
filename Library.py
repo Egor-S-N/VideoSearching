@@ -9,6 +9,7 @@ class Library:
         self._video_source = ""
         self._image_source = ""
         self._index = 0
+        self._dir_name = ""
 
     @property
     def video_source(self):
@@ -21,6 +22,8 @@ class Library:
     @property
     def image_source(self) -> str:
         return self._image_source
+    
+    
 
     @image_source.setter
     def image_source(self, value):
@@ -39,6 +42,8 @@ class Library:
         video_capture = cv2.VideoCapture(self._video_source)
         while video_capture.isOpened():
             ret, frame = video_capture.read()
+            if not ret:
+                break
             frame_resized = cv2.resize(frame, (int(frame.shape[1]//1.7), int(frame.shape[0]//1.7)))
             gray_frame = cv2.cvtColor(frame_resized, cv2.COLOR_BGR2GRAY)
             current_keypoints, current_descriptors = detector.detectAndCompute(gray_frame, None)
