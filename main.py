@@ -6,11 +6,11 @@ from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-
 from Library import Library
 
 qtcreator_file = "frame1.ui"
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtcreator_file)
+
 
 class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -22,6 +22,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.videoOutput = self.makeVideoWidget()
         self.mediaPlayer = self.makeMediaPlayer()
         self.mediaPlayer.setVolume(0)
+
+        self.cb_input.stateChanged.connect(self.cb_input_is_checked)
 
         self.play_btn.setVisible(False)
         self.pause_btn.setVisible(False)
@@ -39,6 +41,12 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.but_execute.clicked.connect(self.but_execute_click)
 
+    def cb_input_is_checked(self):
+        if (self.cb_input.isChecked()) and (self.image_path.text() != ""):
+            self.but_execute.setEnabled(True)
+        else:
+            self.but_execute.setEnabled(False)
+
     def makeMediaPlayer(self):
         mediaPlayer = QMediaPlayer()
         mediaPlayer.setVideoOutput(self.videoOutput)
@@ -52,14 +60,16 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         return videoOutput
 
     def choose_image_click(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Open file', None, "Image (*.png *.jpg *jpeg)")
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, 'Open file', None, "Image (*.png *.jpg *jpeg)")
         if file_path != "":
             self._Library.image_source = file_path
             self.image_path.setText(file_path)
             self.show_image.setPixmap(QPixmap(file_path))
 
     def choose_video_click(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Open file', None, "Video (*.mp4 *.avi *.mov *.mkv)")
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, 'Open file', None, "Video (*.mp4 *.avi *.mov *.mkv)")
         if file_path != "":
             self._Library.video_source = file_path
 
@@ -72,17 +82,15 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.pause_btn.setVisible(True)
             self.restart_btn.setVisible(True)
 
-    
     def play_btn_click(self):
         self.mediaPlayer.play()
+
     def pause_btn_click(self):
         self.mediaPlayer.pause()
-    
+
     def replay_btn_click(self):
         self.mediaPlayer.stop()
         self.mediaPlayer.play()
-
-            
 
     def on_text_changed(self, text):
         if self.video_path.text() == "":
@@ -94,16 +102,16 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.pause_btn.setVisible(True)
             self.restart_btn.setVisible(True)
 
-
-        if (self.video_path.text() != "") and (self.image_path.text() != ""):
+        if (self.video_path.text() != "" or self.cb_input.isChecked()) and (self.image_path.text() != ""):
             self.but_execute.setEnabled(True)
         else:
             self.but_execute.setEnabled(False)
 
-
-
     def but_execute_click(self):
-        self._Library.show_video()
+        if self.cb_input.isChecked():
+            self._Library.search_in_camera()
+        else:
+            self._Library.search_in_video()
 
 
 if __name__ == "__main__":

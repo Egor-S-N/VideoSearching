@@ -94,6 +94,12 @@ class Ui_MainWindow(object):
         self.restart_btn = QtWidgets.QPushButton(self.centralwidget)
         self.restart_btn.setGeometry(QtCore.QRect(558, 267, 93, 28))
         self.restart_btn.setObjectName("restart_btn")
+        self.cb_input = QtWidgets.QCheckBox(self.centralwidget)
+        self.cb_input.setGeometry(QtCore.QRect(20, 160, 139, 28))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.cb_input.setFont(font)
+        self.cb_input.setObjectName("cb_input")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -110,3 +116,4 @@ class Ui_MainWindow(object):
         self.play_btn.setText(_translate("MainWindow", "Play"))
         self.pause_btn.setText(_translate("MainWindow", "Pause"))
         self.restart_btn.setText(_translate("MainWindow", "Replay"))
+        self.cb_input.setText(_translate("MainWindow", "use camera?"))
