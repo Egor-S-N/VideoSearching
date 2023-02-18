@@ -2,4 +2,4 @@ venv/
 Sources/
 .idea/
 __pycache__/
-Results/
+Results/*
