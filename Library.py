@@ -90,4 +90,4 @@ class Library:
         self.search_algorithm(self.video_source)
 
     def search_in_camera(self):
-        self.search_algorithm(1)
+        self.search_algorithm(0)
