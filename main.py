@@ -42,6 +42,15 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.but_execute.clicked.connect(self.but_execute_click)
 
     def cb_input_is_checked(self):
+        if self.cb_input.isChecked():
+            self.video_path.setText("")
+            self.mediaPlayer.setMedia(QMediaContent())
+            self.choise_video_btn.setEnabled(False)
+        else:
+             self.choise_video_btn.setEnabled(True)
+            
+
+
         if (self.cb_input.isChecked()) and (self.image_path.text() != ""):
             self.but_execute.setEnabled(True)
         else:

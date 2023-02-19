@@ -7,6 +7,8 @@ Supported image formats: png, jpg
 
 The program has a convenient graphical interface for convenient operation.
 
+After selecting a video file from your computer, the user will be able to view, stop or restart it in the preview window.
+
 <!-- set design image--> 
 
 Processing takes place in real time, the results are shown to the user on the screen, and are also saved to the results folder with the date and time of the start of the algorithm.
