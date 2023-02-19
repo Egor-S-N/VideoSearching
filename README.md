@@ -1,4 +1,4 @@
-# VideoSearching  <!-- edit name --> 
+# Video detection
 Python software for video object detection using OpenCV
 ## Description 
 ---
@@ -15,7 +15,7 @@ Processing takes place in real time, the results are shown to the user on the sc
 ---
 
 1. Install or clone this project 
-2. Install the [missing libraries](/requirements.txt)<!--edit file path  --><!-- example http://github.com/github/markup/tree/master/lib/github/markups.rb#L13 -->
+2. Install the [missing libraries](/requirements.txt)
 3. Select the video source you need, as well as the image with the object you are looking for
 4. click on the button "Execute"
 
@@ -23,9 +23,9 @@ After pressing the button, the result of the work will be shown to the user in r
 
 
 Demo: 
-
+<!-- insert video here  -->
 ## 📝 License
 ---
 Copyright © 2023 [Nifakin Egor](https://github.com/Egor-S-N).<br>This project is [MIT](https://github.com/Egor-S-N/VideoSearching/blob/main/LICENSE) licensed.
-<!-- insert video here  -->
+
 
