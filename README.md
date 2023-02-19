@@ -9,7 +9,14 @@ The program has a convenient graphical interface for convenient operation.
 
 After selecting a video file from your computer, the user will be able to view, stop or restart it in the preview window.
 
-<!-- set design image--> 
+---
+
+### The design of the application looks like this
+<p align="center">
+  <img width="546" height="427" src="https://user-images.githubusercontent.com/63055406/219950665-98ed46ea-4c17-43b5-a498-9cd64102cef4.png">
+</p>
+
+---
 
 Processing takes place in real time, the results are shown to the user on the screen, and are also saved to the results folder with the date and time of the start of the algorithm.
 ## How to use
