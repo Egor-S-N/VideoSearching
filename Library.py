@@ -56,26 +56,29 @@ class Library:
                         good_matches.append(m)
             except:
                 pass
+            try:
 
-            if len(good_matches) > 10:
-                reference_points = np.float32(
-                    [keypoints[m.queryIdx].pt for m in good_matches])
-                current_points = np.float32(
-                    [current_keypoints[m.trainIdx].pt for m in good_matches])
-                H, mask = cv2.findHomography(
-                    reference_points, current_points, cv2.RANSAC, 5.0)
-                h, w = reference_image.shape
-                corners = np.float32(
-                    [[0, 0], [0, h], [w, h], [w, 0]]).reshape(-1, 1, 2)
-                current_corners = cv2.perspectiveTransform(corners, H)
-                frame_resized = cv2.polylines(
-                    frame_resized, [np.int32(current_corners)], True, (0, 0, 255), 2)
-                x, y = np.int32(current_corners)[0][0]
-                cv2.putText(frame_resized, "Object found", (x, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 1)
+                if len(good_matches) > 10:
+                    reference_points = np.float32(
+                        [keypoints[m.queryIdx].pt for m in good_matches])
+                    current_points = np.float32(
+                        [current_keypoints[m.trainIdx].pt for m in good_matches])
+                    H, mask = cv2.findHomography(
+                        reference_points, current_points, cv2.RANSAC, 5.0)
+                    h, w = reference_image.shape
+                    corners = np.float32(
+                        [[0, 0], [0, h], [w, h], [w, 0]]).reshape(-1, 1, 2)
+                    current_corners = cv2.perspectiveTransform(corners, H)
+                    frame_resized = cv2.polylines(
+                        frame_resized, [np.int32(current_corners)], True, (0, 0, 255), 2)
+                    x, y = np.int32(current_corners)[0][0]
+                    cv2.putText(frame_resized, "Object found", (x, y),
+                                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 1)
 
-                cv2.imwrite(
-                    f"{dir_name}/test_{self._index}.png", frame_resized)
+                    cv2.imwrite(
+                        f"{dir_name}/test_{self._index}.png", frame_resized)
+            except:
+                print("some error")
 
             cv2.imshow('Video', frame_resized)
             self._index += 1

@@ -3,3 +3,4 @@ Sources/
 .idea/
 __pycache__/
 Results/*
+.vscode/

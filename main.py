@@ -73,17 +73,19 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self, 'Open file', None, "Image (*.png *.jpg *jpeg)")
         if file_path != "":
             self._Library.image_source = file_path
+            print(file_path)
             self.image_path.setText(file_path)
             self.show_image.setPixmap(QPixmap(file_path))
 
     def choose_video_click(self):
-        file_path, _ = QFileDialog.getOpenFileName(
-            self, 'Open file', None, "Video (*.mp4 *.avi *.mov *.mkv)")
+        # file_path, _ = QFileDialog.getOpenFileName(
+        #     self, 'Open file', None, "Video (*.mp4 *.avi *.mov *.mkv)")
+        file_path = '/home/egor/Diplom/VideoSearching/Sources/video.mp4'
         if file_path != "":
             self._Library.video_source = file_path
 
             self.video_path.setText(file_path)
-
+            print(file_path)
             self.mediaPlayer.setMedia(QMediaContent(QUrl(file_path)))
             self.mediaPlayer.play()
             self.mediaPlayer.pause()
