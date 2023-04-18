@@ -48,7 +48,6 @@
 #             self.choise_video_btn.setEnabled(False)
 #         else:
 #              self.choise_video_btn.setEnabled(True)
-            
 
 
 #         if (self.cb_input.isChecked()) and (self.image_path.text() != ""):
@@ -132,25 +131,23 @@
 #     sys.exit(app.exec_())
 
 
-
-
-
 import sys
-
+from Library import Library
 import cv2
 from PyQt5 import QtGui, QtWidgets, uic
 from PyQt5.QtCore import QTimer, QModelIndex
 from PyQt5.QtGui import QImage, QPixmap, QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget, QFileDialog
 
 qtcreator_file = "window.ui"
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtcreator_file)
 
-class VideoPlayer(QtWidgets.QMainWindow, Ui_MainWindow):
+
+class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
-
+        self._Library = Library()
         self.setupUi(self)
         self.load_cameras()
         self.camera_list.clicked.connect(self.item_clicked)
@@ -158,32 +155,38 @@ class VideoPlayer(QtWidgets.QMainWindow, Ui_MainWindow):
         self.rb_from_camera.toggled.connect(self.onChangeInput)
 
         self.image_preview.mousePressEvent = self.onImageClick
-     
 
+        self.choose_image_btn.clicked.connect(self.chooseImageClick)
 
+        self.choose_video_btn.clicked.connect(self.chooseVideoClick)
 
-        # # Create a label to display the video stream
-        # self.label = QLabel(self)
+        self.cap = cv2.VideoCapture()
 
-        # # Create a vertical layout to hold the label
-        # layout = QVBoxLayout()
-        # layout.addWidget(self.label)
-        # self.setLayout(layout)
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_frame)
 
-        # # Initialize the video capture object
-        # self.cap = cv2.VideoCapture(0)
+    def chooseImageClick(self) -> None:
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, 'Open file', None, "Image (*.png *.jpg *jpeg)")
+        if file_path != "":
+            self._Library.image_source = file_path
+            print(file_path)
+            self.image_preview.setPixmap(QPixmap(file_path))
 
-        # # Start the video stream
-        # self.timer = QTimer(self)
-        # self.timer.timeout.connect(self.update_frame)
-        # self.timer.start(50)
+    def chooseVideoClick(self) -> None:
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, 'Open file', None, "Video (*.mp4 *.avi *.mov *.mkv)")
+        if file_path != "":
+            self._Library.video_source = file_path
+            print(file_path)
+            self.timer.stop()
+            self.cap.release()
+            self.cap = cv2.VideoCapture(file_path)
+            self.timer.start()
 
     def onImageClick(self, event) -> None:
         """Scale image to specified dimensions"""
-        print('sadlkas;ldkasd')
-
-
-
+        print('image was clicked')
 
     def onChangeInput(self):
         if self.rb_from_video.isChecked():
@@ -193,10 +196,7 @@ class VideoPlayer(QtWidgets.QMainWindow, Ui_MainWindow):
             self.choose_video_btn.setMaximumHeight(0)
             self.camera_list.setMaximumHeight(100)
 
-
-
     def load_cameras(self):
-           
         non_working_ports = []
         dev_port = 0
         working_ports = []
@@ -208,7 +208,7 @@ class VideoPlayer(QtWidgets.QMainWindow, Ui_MainWindow):
                 is_reading, img = camera.read()
                 if is_reading:
                     working_ports.append(dev_port)
-            dev_port +=1
+            dev_port += 1
 
             self.model = QStandardItemModel()
             self.camera_list.setModel(self.model)
@@ -217,32 +217,32 @@ class VideoPlayer(QtWidgets.QMainWindow, Ui_MainWindow):
                 item = QStandardItem(str(i))
                 self.model.appendRow(item)
 
-
-    
     def item_clicked(self, index):
         item = self.model.itemFromIndex(index)
-        print(f"Item clicked: {item.text()}")
-       
+        item = int(item.text())
+        self.timer.stop()
+        self.cap.release()
+        self.cap = cv2.VideoCapture(item)
+        self.timer.start()
+
 
     def update_frame(self):
-        # Read a frame from the video stream
         ret, frame = self.cap.read()
-
-        # Convert the frame to a QImage
         if ret:
-            image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
+            image = QImage(
+                frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(image)
-            self.label.setPixmap(pixmap)
+            self.video_preview.setPixmap(pixmap)
+        else:
+            self.cap.release()
 
     def closeEvent(self, event):
-        # Stop the video stream when the window is closed
         self.cap.release()
-        self.timer.stop()
         event.accept()
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    player = VideoPlayer()
-    player.show()
+    window = MyApp()
+    window.show()
     sys.exit(app.exec_())
