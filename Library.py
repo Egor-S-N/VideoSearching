@@ -92,5 +92,5 @@ class Library:
     def search_in_video(self):
         self.search_algorithm(self.video_source)
 
-    def search_in_camera(self):
-        self.search_algorithm(0)
+    def search_in_camera(self, camera_index:int) -> None:
+        self.search_algorithm(camera_index)

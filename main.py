@@ -145,6 +145,12 @@ Ui_MainWindow, QtBaseClass = uic.loadUiType(qtcreator_file)
 
 class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
+        self.isCamera = False
+        self.isVideo = False
+        self.isImage = False
+
+        self.camera_index = None
+
         QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self._Library = Library()
@@ -160,6 +166,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.choose_video_btn.clicked.connect(self.chooseVideoClick)
 
+        self.execute_btn.clicked.connect(self.start_searching_click)
+
         self.cap = cv2.VideoCapture()
 
         self.timer = QTimer(self)
@@ -172,6 +180,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self._Library.image_source = file_path
             print(file_path)
             self.image_preview.setPixmap(QPixmap(file_path))
+            self.isImage = True
+            self.check_video_image()
 
     def chooseVideoClick(self) -> None:
         file_path, _ = QFileDialog.getOpenFileName(
@@ -183,6 +193,9 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.cap.release()
             self.cap = cv2.VideoCapture(file_path)
             self.timer.start()
+            self.isVideo = True
+            self.isCamera = False
+            self.check_video_image()
 
     def onImageClick(self, event) -> None:
         """Scale image to specified dimensions"""
@@ -223,14 +236,17 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.timer.stop()
         self.cap.release()
         self.cap = cv2.VideoCapture(item)
+        self.isCamera = True
+        self.isVideo = False
+        self.camera_index = item 
         self.timer.start()
-
+        self.check_video_image()
 
     def update_frame(self):
         ret, frame = self.cap.read()
         if ret:
             image = QImage(
-                frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
+                frame, frame.shape[1], frame.shape[0], QImage.Format_BGR888)
             pixmap = QPixmap.fromImage(image)
             self.video_preview.setPixmap(pixmap)
         else:
@@ -240,6 +256,26 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.cap.release()
         event.accept()
 
+    def check_video_image(self) -> None:
+        """Checking if video and image or camera and image are full"""
+        if (self.isVideo or self.isCamera) and self.isImage:
+            self.execute_btn.setEnabled(True)
+        else:
+            self.execute_btn.setEnabled(False)
+
+
+    def start_searching_click(self):
+        print(f"Camera: {self.isCamera} \nVideo: {self.isVideo} \nImage: {self.isImage}")
+        print(f"CameraIndex: {self.camera_index}")
+        self.cap = cv2.VideoCapture()
+        self.timer.stop()
+        if self.isCamera:
+            self._Library.search_in_camera(self.camera_index)
+            self.cap = cv2.VideoCapture(self.camera_index)
+            self.timer.start()
+            
+        elif self.isVideo:
+            self._Library.search_in_video()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
