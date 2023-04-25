@@ -26,7 +26,7 @@ class Library:
     def image_source(self, value):
         self._image_source = value
 
-    def search_algorithm(self, value):
+    def search_algorithm_with_image(self, value):
         self._index = 0
         dir_name = "Results/" + str(date.today()) + \
             " " + str(datetime.now().strftime("%H-%M-%S"))
@@ -89,8 +89,57 @@ class Library:
         video_capture.release()
         cv2.destroyAllWindows()
 
-    def search_in_video(self):
-        self.search_algorithm(self.video_source)
+    def search_in_video_with_image(self):
+        self.search_algorithm_with_image(self.video_source)
 
-    def search_in_camera(self, camera_index:int) -> None:
-        self.search_algorithm(camera_index)
+    def search_in_camera_with_image(self, camera_index:int) -> None:
+        self.search_algorithm_with_image(camera_index)
+    
+    def search_in_video_with_text(self, text):
+        self.search_algorithm_with_text(text, self.video_source)
+
+    def search_in_camera_with_text(self, text, camera_index):
+        self.search_algorithm_with_text(text, camera_index)
+
+
+    def search_algorithm_with_text(self, query, value) -> None:
+        cars = ['car', 'машина', 'number', 'car number', 'number number' , 'computer', 'номер']
+        cats = ['cat', 'кот', 'кошка', 'kitty']
+        clocs = ['clock', 'часы']
+        faces = ['face', 'лицо', 'голова']
+
+        cascades = {'cat': 'Algorithms/haarcascade_frontalcatface.xml',
+                        'clock': 'Algorithms/haarcascade_wall_clock.xml',
+                        'car': 'Algorithms/haarcascade_russian_plate_number.xml',
+                        'face' : 'Algorithms/haarcascade_frontalface_default.xml'}
+
+        video_capture = cv2.VideoCapture(value)
+        cascade_path = None
+        if query in faces:
+            cascade_path = cascades.get('face')
+        elif query in cars:
+            cascade_path = cascades.get('car')
+        elif query in cats:
+            cascade_path = cascades.get('cat')
+        elif query in clocs:
+            cascade_path = cascades.get('clock')
+        
+        if not cascade_path:
+            return 0
+        cascade = cv2.CascadeClassifier(cascade_path)
+        while(video_capture.isOpened()):
+            ret,frame = video_capture.read()
+            if ret == True:
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                objects = cascade.detectMultiScale(
+                gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+                for (x, y, w, h) in objects:
+                    cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                cv2.imshow('output.jpg', frame)
+
+                cv2.imshow('asd', frame)
+                if cv2.waitKey(25) & 0xFF == ord('q'):
+                    break
+            else: 
+                break
+        cv2.destroyAllWindows()

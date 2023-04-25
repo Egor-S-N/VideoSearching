@@ -17,6 +17,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.isCamera = False
         self.isVideo = False
         self.isImage = False
+        self.isText = False
 
         self.camera_index = None
 
@@ -53,6 +54,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self._Library.image_source = file_path
             self.image_preview.setPixmap(QPixmap(file_path))
             self.isImage = True
+            self.isText = False
             self.check_video_image()
 
     def chooseVideoClick(self) -> None:
@@ -78,9 +80,13 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.rb_from_video.isChecked():
             self.choose_video_btn.setMaximumHeight(30)
             self.camera_list.setMaximumHeight(0)
+            self.isCamera = False
         elif self.rb_from_camera.isChecked():
             self.choose_video_btn.setMaximumHeight(0)
             self.camera_list.setMaximumHeight(100)
+            self.isVideo = False
+        
+        self.check_video_image()
    
     def onChangeObjectSearching(self) -> None:
         """Change object search (from image / from text description)"""
@@ -90,13 +96,17 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.image_preview.setMaximumHeight(0)
             self.query_te.setMaximumWidth(16777215)
             self.query_te.setMinimumWidth(280)
+            self.isText = True
+            self.isImage = False
             
         elif self.rb_image.isChecked():
             self.query_te.setMaximumWidth(0)
             self.query_te.setMinimumWidth(0)
             self.choose_image_btn.setMaximumHeight(100)
             self.image_preview.setMaximumHeight(16777215)
-            print("image")
+            self.isText = False
+
+        self.check_video_image()
 
     def load_cameras(self) -> None:
         """Method to display all connected cameras"""
@@ -150,27 +160,37 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def check_video_image(self) -> None:
         """Checking if video and image or camera and image are full"""
-        if (self.isVideo or self.isCamera) and self.isImage:
+        if (self.isVideo or self.isCamera) and (self.isImage or self.isText):
             self.execute_btn.setEnabled(True)
         else:
             self.execute_btn.setEnabled(False)
 
     def start_searching_click(self) -> None:
         """Method for launching the object search algorithm"""
-        # print(f"Camera: {self.isCamera} \nVideo: {self.isVideo} \nImage: {self.isImage}")
-        # print(f"CameraIndex: {self.camera_index}")
         self.cap = cv2.VideoCapture()
         self.timer.stop()
         if self.isCamera:
-            self._Library.search_in_camera(self.camera_index)
+            if self.isImage:
+                self._Library.search_in_camera_with_image(self.camera_index)
+            elif self.isText:
+                self._Library.search_in_camera_with_text(self.query_te.toPlainText(), self.camera_index)
+            
             self.cap = cv2.VideoCapture(self.camera_index)
             self.timer.start()
             
         elif self.isVideo:
-            self._Library.search_in_video()
+            if self.isImage:
+                self._Library.search_in_video_with_image()
+            elif self.isText:
+                self._Library.search_in_video_with_text(self.query_te.toPlainText())
 
-
-
+        # print(f'Camera: {self.isCamera}')
+        # print(f'Video: {self.isVideo}')
+        # print(f'Image: {self.isImage}')
+        # print(f'Text: {self.isText}')
+        # # if self.isCamera or self.isVideo:
+        # #     if self.isImage or self.isText:
+        # #         pr
 
 def detect_objects(image_path, query) -> None:
     '''Search objects by text query'''
