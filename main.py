@@ -1,150 +1,18 @@
-# import sys
-# from PyQt5 import QtWidgets, uic
-# from PyQt5.QtGui import QPixmap
-# from PyQt5.QtWidgets import *
-# from PyQt5.QtMultimedia import *
-# from PyQt5.QtMultimediaWidgets import *
-# from PyQt5.QtCore import *
-# from PyQt5.QtGui import *
-# from Library import Library
-
-# qtcreator_file = "frame1.ui"
-# Ui_MainWindow, QtBaseClass = uic.loadUiType(qtcreator_file)
-
-
-# class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
-#     def __init__(self):
-#         QtWidgets.QMainWindow.__init__(self)
-#         Ui_MainWindow.__init__(self)
-#         self.setupUi(self)
-#         self.setFixedSize(843, 622)
-#         self._Library = Library()
-#         self.videoOutput = self.makeVideoWidget()
-#         self.mediaPlayer = self.makeMediaPlayer()
-#         self.mediaPlayer.setVolume(0)
-
-#         self.cb_input.stateChanged.connect(self.cb_input_is_checked)
-
-#         self.play_btn.setVisible(False)
-#         self.pause_btn.setVisible(False)
-#         self.restart_btn.setVisible(False)
-
-#         self.play_btn.clicked.connect(self.play_btn_click)
-#         self.pause_btn.clicked.connect(self.pause_btn_click)
-#         self.restart_btn.clicked.connect(self.replay_btn_click)
-
-#         self.video_path.textChanged[str].connect(self.on_text_changed)
-#         self.image_path.textChanged[str].connect(self.on_text_changed)
-
-#         self.choose_image_btn.clicked.connect(self.choose_image_click)
-#         self.choise_video_btn.clicked.connect(self.choose_video_click)
-
-#         self.but_execute.clicked.connect(self.but_execute_click)
-
-#     def cb_input_is_checked(self):
-#         if self.cb_input.isChecked():
-#             self.video_path.setText("")
-#             self.mediaPlayer.setMedia(QMediaContent())
-#             self.choise_video_btn.setEnabled(False)
-#         else:
-#              self.choise_video_btn.setEnabled(True)
-
-
-#         if (self.cb_input.isChecked()) and (self.image_path.text() != ""):
-#             self.but_execute.setEnabled(True)
-#         else:
-#             self.but_execute.setEnabled(False)
-
-#     def makeMediaPlayer(self):
-#         mediaPlayer = QMediaPlayer()
-#         mediaPlayer.setVideoOutput(self.videoOutput)
-#         return mediaPlayer
-
-#     def makeVideoWidget(self):
-#         videoOutput = QVideoWidget(self)
-#         vbox = QVBoxLayout()
-#         vbox.addWidget(videoOutput)
-#         self.video_widget.setLayout(vbox)
-#         return videoOutput
-
-#     def choose_image_click(self):
-#         file_path, _ = QFileDialog.getOpenFileName(
-#             self, 'Open file', None, "Image (*.png *.jpg *jpeg)")
-#         if file_path != "":
-#             self._Library.image_source = file_path
-#             print(file_path)
-#             self.image_path.setText(file_path)
-#             self.show_image.setPixmap(QPixmap(file_path))
-
-#     def choose_video_click(self):
-#         # file_path, _ = QFileDialog.getOpenFileName(
-#         #     self, 'Open file', None, "Video (*.mp4 *.avi *.mov *.mkv)")
-#         file_path = '/home/egor/Diplom/VideoSearching/Sources/video.mp4'
-#         if file_path != "":
-#             self._Library.video_source = file_path
-
-#             self.video_path.setText(file_path)
-#             print(file_path)
-#             self.mediaPlayer.setMedia(QMediaContent(QUrl(file_path)))
-#             self.mediaPlayer.play()
-#             self.mediaPlayer.pause()
-#             self.play_btn.setVisible(True)
-#             self.pause_btn.setVisible(True)
-#             self.restart_btn.setVisible(True)
-
-#     def play_btn_click(self):
-#         self.mediaPlayer.play()
-
-#     def pause_btn_click(self):
-#         self.mediaPlayer.pause()
-
-#     def replay_btn_click(self):
-#         self.mediaPlayer.stop()
-#         self.mediaPlayer.play()
-
-#     def on_text_changed(self, text):
-#         if self.video_path.text() == "":
-#             self.play_btn.setVisible(False)
-#             self.pause_btn.setVisible(False)
-#             self.restart_btn.setVisible(False)
-#         else:
-#             self.play_btn.setVisible(True)
-#             self.pause_btn.setVisible(True)
-#             self.restart_btn.setVisible(True)
-
-#         if (self.video_path.text() != "" or self.cb_input.isChecked()) and (self.image_path.text() != ""):
-#             self.but_execute.setEnabled(True)
-#         else:
-#             self.but_execute.setEnabled(False)
-
-#     def but_execute_click(self):
-#         if self.cb_input.isChecked():
-#             self._Library.search_in_camera()
-#         else:
-#             self._Library.search_in_video()
-
-
-# if __name__ == "__main__":
-#     app = QtWidgets.QApplication(sys.argv)
-#     window = MyApp()
-#     window.show()
-#     sys.exit(app.exec_())
-
-
 import sys
 from Library import Library
 import cv2
-from PyQt5 import QtGui, QtWidgets, uic
-from PyQt5.QtCore import QTimer, QModelIndex
+from PyQt5 import QtWidgets, uic
+from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap, QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget, QFileDialog
+from PyQt5.QtWidgets import QApplication, QFileDialog
 
 qtcreator_file = "window.ui"
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtcreator_file)
 
 
 class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
+        """application constructor"""
         self.isCamera = False
         self.isVideo = False
         self.isImage = False
@@ -174,21 +42,21 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.timer.timeout.connect(self.update_frame)
 
     def chooseImageClick(self) -> None:
+        """Method for choising image from user`s computer"""
         file_path, _ = QFileDialog.getOpenFileName(
             self, 'Open file', None, "Image (*.png *.jpg *jpeg)")
         if file_path != "":
             self._Library.image_source = file_path
-            print(file_path)
             self.image_preview.setPixmap(QPixmap(file_path))
             self.isImage = True
             self.check_video_image()
 
     def chooseVideoClick(self) -> None:
+        '''Method for choising video from user`s computer'''
         file_path, _ = QFileDialog.getOpenFileName(
             self, 'Open file', None, "Video (*.mp4 *.avi *.mov *.mkv)")
         if file_path != "":
             self._Library.video_source = file_path
-            print(file_path)
             self.timer.stop()
             self.cap.release()
             self.cap = cv2.VideoCapture(file_path)
@@ -201,7 +69,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         """Scale image to specified dimensions"""
         print('image was clicked')
 
-    def onChangeInput(self):
+    def onChangeInput(self) -> None:
+        """Change video input (video / camera)"""
         if self.rb_from_video.isChecked():
             self.choose_video_btn.setMaximumHeight(30)
             self.camera_list.setMaximumHeight(0)
@@ -209,7 +78,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.choose_video_btn.setMaximumHeight(0)
             self.camera_list.setMaximumHeight(100)
 
-    def load_cameras(self):
+    def load_cameras(self) -> None:
+        """Method to display all connected cameras"""
         non_working_ports = []
         dev_port = 0
         working_ports = []
@@ -230,7 +100,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 item = QStandardItem(str(i))
                 self.model.appendRow(item)
 
-    def item_clicked(self, index):
+    def item_clicked(self, index) -> None:
+        """Method to select available camera"""
         item = self.model.itemFromIndex(index)
         item = int(item.text())
         self.timer.stop()
@@ -242,7 +113,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.timer.start()
         self.check_video_image()
 
-    def update_frame(self):
+    def update_frame(self) -> None:
+        """Method for refreshing preview window frames"""
         ret, frame = self.cap.read()
         if ret:
             image = QImage(
@@ -264,9 +136,10 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.execute_btn.setEnabled(False)
 
 
-    def start_searching_click(self):
-        print(f"Camera: {self.isCamera} \nVideo: {self.isVideo} \nImage: {self.isImage}")
-        print(f"CameraIndex: {self.camera_index}")
+    def start_searching_click(self) -> None:
+        """Method for launching the object search algorithm"""
+        # print(f"Camera: {self.isCamera} \nVideo: {self.isVideo} \nImage: {self.isImage}")
+        # print(f"CameraIndex: {self.camera_index}")
         self.cap = cv2.VideoCapture()
         self.timer.stop()
         if self.isCamera:
