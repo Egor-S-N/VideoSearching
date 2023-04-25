@@ -1,6 +1,7 @@
 import sys
 from Library import Library
 import cv2
+from fuzzywuzzy import fuzz
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap, QStandardItemModel, QStandardItem
@@ -150,8 +151,55 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         elif self.isVideo:
             self._Library.search_in_video()
 
+
+def detect_objects(image_path, query) -> None:
+    '''Search objects by text query'''
+    image = cv2.imread(image_path)
+
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    cars = ['car', 'машина', 'number', 'car number', 'number number' , 'computer', 'номер']
+    cats = ['cat', 'кот', 'кошка', 'kitty']
+    clocs = ['clock', 'часы']
+
+    cascades = {'cat': 'Algorithms/haarcascade_frontalcatface.xml',
+            'clock': 'Algorithms/haarcascade_wall_clock.xml',
+            'car': 'Algorithms/haarcascade_russian_plate_number.xml'}
+    
+    cascade_path = None
+    if query in cars:
+        cascade_path = cascades.get('car')
+    elif query in cats:
+        cascade_path = cascades.get('cat')
+    elif query in clocs:
+        cascade_path = cascades.get('clock')
+
+
+
+    if not cascade_path:
+        return 0
+    cascade = cv2.CascadeClassifier(cascade_path)
+
+    objects = cascade.detectMultiScale(
+        gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+
+    for (x, y, w, h) in objects:
+        cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+    cv2.imshow('output.jpg', image)
+    cv2.waitKey(0)
+    
+
+
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = MyApp()
-    window.show()
-    sys.exit(app.exec_())
+    # app = QApplication(sys.argv)
+    # window = MyApp()
+    # window.show()
+    # sys.exit(app.exec_())
+    # Список объектов
+    
+    image_path = 'Sources/car.jpg'
+    query = input("Enter your query: ")
+
+    detect_objects(image_path, query)
