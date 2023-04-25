@@ -151,11 +151,25 @@
          </widget>
         </item>
         <item>
+         <widget class="QRadioButton" name="rb_text">
+          <property name="text">
+           <string>Text</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="rb_image">
+          <property name="text">
+           <string>Image</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="choose_image_btn">
           <property name="maximumSize">
            <size>
             <width>130</width>
-            <height>16777215</height>
+            <height>0</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -169,6 +183,22 @@
        </layout>
       </item>
       <item>
+       <widget class="QTextEdit" name="query_te">
+        <property name="minimumSize">
+         <size>
+          <width>280</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="image_preview">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -177,10 +207,11 @@
          </sizepolicy>
         </property>
         <property name="autoFillBackground">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="styleSheet">
-         <string/>
+         <string notr="true">background-color: black;
+</string>
         </property>
         <property name="text">
          <string/>

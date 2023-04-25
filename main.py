@@ -29,6 +29,9 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.rb_from_video.toggled.connect(self.onChangeInput)
         self.rb_from_camera.toggled.connect(self.onChangeInput)
 
+        self.rb_text.toggled.connect(self.onChangeObjectSearching)
+        self.rb_image.toggled.connect(self.onChangeObjectSearching)
+
         self.image_preview.mousePressEvent = self.onImageClick
 
         self.choose_image_btn.clicked.connect(self.chooseImageClick)
@@ -78,6 +81,22 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         elif self.rb_from_camera.isChecked():
             self.choose_video_btn.setMaximumHeight(0)
             self.camera_list.setMaximumHeight(100)
+   
+    def onChangeObjectSearching(self) -> None:
+        """Change object search (from image / from text description)"""
+        if self.rb_text.isChecked():
+            self.choose_image_btn.setMaximumHeight(0)
+            self.query_te.setMaximumHeight(100)
+            self.image_preview.setMaximumHeight(0)
+            self.query_te.setMaximumWidth(16777215)
+            self.query_te.setMinimumWidth(280)
+            
+        elif self.rb_image.isChecked():
+            self.query_te.setMaximumWidth(0)
+            self.query_te.setMinimumWidth(0)
+            self.choose_image_btn.setMaximumHeight(100)
+            self.image_preview.setMaximumHeight(16777215)
+            print("image")
 
     def load_cameras(self) -> None:
         """Method to display all connected cameras"""
@@ -136,7 +155,6 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.execute_btn.setEnabled(False)
 
-
     def start_searching_click(self) -> None:
         """Method for launching the object search algorithm"""
         # print(f"Camera: {self.isCamera} \nVideo: {self.isVideo} \nImage: {self.isImage}")
@@ -150,6 +168,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             
         elif self.isVideo:
             self._Library.search_in_video()
+
+
 
 
 def detect_objects(image_path, query) -> None:
@@ -190,16 +210,13 @@ def detect_objects(image_path, query) -> None:
     cv2.imshow('output.jpg', image)
     cv2.waitKey(0)
     
-
-
 if __name__ == '__main__':
-    # app = QApplication(sys.argv)
-    # window = MyApp()
-    # window.show()
-    # sys.exit(app.exec_())
-    # Список объектов
+    app = QApplication(sys.argv)
+    window = MyApp()
+    window.show()
+    sys.exit(app.exec_())
     
-    image_path = 'Sources/car.jpg'
-    query = input("Enter your query: ")
+    # image_path = 'Sources/car.jpg'
+    # query = input("Enter your query: ")
 
-    detect_objects(image_path, query)
+    # detect_objects(image_path, query)
