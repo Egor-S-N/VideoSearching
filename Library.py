@@ -1,10 +1,12 @@
 import os
 import cv2
 import numpy as np
-from datetime import date, time, datetime
+from datetime import date, datetime
 
 
 class Library:
+    """This class is a library that provides methods to search for objects in a video stream or camera based on an image or text query.
+It has methods for setting video and image source, and for object search based on SIFT (scale invariant feature transformations) and text query using Haar cascade algorithms."""
     def __init__(self):
         self._video_source = ""
         self._image_source = ""
@@ -26,7 +28,8 @@ class Library:
     def image_source(self, value):
         self._image_source = value
 
-    def search_algorithm_with_image(self, value):
+    def search_algorithm_with_image(self, value) -> None:
+        """Algorithm for searching objects by image template """
         self._index = 0
         dir_name = "Results/" + str(date.today()) + \
             " " + str(datetime.now().strftime("%H-%M-%S"))
@@ -80,7 +83,7 @@ class Library:
             except:
                 print("some error")
 
-            cv2.imshow('Video', frame_resized)
+            cv2.imshow('results', frame_resized)
             self._index += 1
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -89,20 +92,28 @@ class Library:
         video_capture.release()
         cv2.destroyAllWindows()
 
-    def search_in_video_with_image(self):
+    def search_in_video_with_image(self) -> None:
+        """Method for searching objects in video with image"""
         self.search_algorithm_with_image(self.video_source)
 
     def search_in_camera_with_image(self, camera_index:int) -> None:
+        """Method for searching objects in camera with image"""
         self.search_algorithm_with_image(camera_index)
     
-    def search_in_video_with_text(self, text):
+    def search_in_video_with_text(self, text) -> None:
+        """Method for searching objects in video with text"""
         self.search_algorithm_with_text(text, self.video_source)
 
-    def search_in_camera_with_text(self, text, camera_index):
+    def search_in_camera_with_text(self, text, camera_index) -> None:
+        """Method for searching in camera with text"""
         self.search_algorithm_with_text(text, camera_index)
 
-
     def search_algorithm_with_text(self, query, value) -> None:
+        """Algorithm for searching objects by text"""
+        self._index = 0
+        dir_name = "Results/" + str(date.today()) + \
+            " " + str(datetime.now().strftime("%H-%M-%S"))
+        os.mkdir(dir_name)
         cars = ['car', 'машина', 'number', 'car number', 'number number' , 'computer', 'номер']
         cats = ['cat', 'кот', 'кошка', 'kitty']
         clocs = ['clock', 'часы']
@@ -112,7 +123,7 @@ class Library:
                         'clock': 'Algorithms/haarcascade_wall_clock.xml',
                         'car': 'Algorithms/haarcascade_russian_plate_number.xml',
                         'face' : 'Algorithms/haarcascade_frontalface_default.xml'}
-
+        query = query.lower().strip()
         video_capture = cv2.VideoCapture(value)
         cascade_path = None
         if query in faces:
@@ -135,11 +146,12 @@ class Library:
                 gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
                 for (x, y, w, h) in objects:
                     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                cv2.imshow('output.jpg', frame)
-
-                cv2.imshow('asd', frame)
+                cv2.imwrite(f"{dir_name}/test_{self._index}.png", frame)
+                cv2.imshow('results', frame)
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     break
+
+                self._index += 1
             else: 
                 break
         cv2.destroyAllWindows()
