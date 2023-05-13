@@ -2,7 +2,7 @@ import unittest
 import os
 import shutil
 from Library import Library
-
+import time
 
 
 class TestLibrary(unittest.TestCase):
@@ -12,22 +12,35 @@ class TestLibrary(unittest.TestCase):
         self.library = Library()
 
     def test_video_source(self):
-        self.library.video_source = "Sources\VERT_TEST.mkv"
-        self.assertEqual(self.library.video_source, "Sources\VERT_TEST.mkv")
+        self.library.video_source = "Sources/clocks.mp4"
+        self.assertEqual(self.library.video_source, "Sources/clocks.mp4")
 
     def test_image_source(self):
-        self.library.image_source = "Sources\search_vert.png"
-        self.assertEqual(self.library.image_source, "Sources\search_vert.png")
+        self.library.image_source = "Sources/clock.png"
+        self.assertEqual(self.library.image_source, "Sources/clock.png")
 
-    def test_show_video(self):
-        self.library.video_source = "D:\PythonProjects\VideoSearching\Sources\VERT_TEST.mkv"
-        self.library.image_source = "D:\PythonProjects\VideoSearching\Sources\search_vert.png"
-        self.library.show_video()
-        self.assertTrue(os.path.exists("test_0.png"))
+    def test_search_algorithm_with_image(self):
+        self.library.image_source = "Sources/clock.png"
+        self.library.video_source = "Sources/clocks.mp4"
+        print(f"----------{self.library.image_source}-----------")
+        self.library.search_algorithm_with_image(self.library.video_source)
+        assert self.library._index > 0
+    
+    def test_search_algorithm_with_text(self):
+        self.library = Library()
+        time.sleep(1)
+        self.library.video_source = "Sources/clocks.mp4"
+        self.library.image_source = "Sources/clock.png"
+        test_query = "clock"
+        self.library.search_algorithm_with_text(query=test_query,value=self.library.video_source)
+        assert self.library._index > 0
+
     @classmethod  
     def tearDownClass(cls):
-        for file in os.listdir(os.getcwd()):
-                shutil.rmtree(file)
+        results_dir = os.path.join(os.getcwd(), "Results")
+        for file in os.listdir(results_dir):
+                full_path = os.path.join(results_dir, file)
+                shutil.rmtree(full_path)
 
 if __name__ == '__main__':
     unittest.main()
