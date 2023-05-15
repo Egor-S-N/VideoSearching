@@ -127,13 +127,13 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.camera_list.setModel(self.model)
 
             for i in working_ports:
-                item = QStandardItem(str(i))
+                item = QStandardItem(f"Camera: {i}")
                 self.model.appendRow(item)
 
     def item_clicked(self, index) -> None:
         """Method to select available camera"""
         item = self.model.itemFromIndex(index)
-        item = int(item.text())
+        item = int(item.text().split(' ')[1])
         self.timer.stop()
         self.cap.release()
         self.cap = cv2.VideoCapture(item)
