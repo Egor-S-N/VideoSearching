@@ -22,7 +22,6 @@ class TestLibrary(unittest.TestCase):
     def test_search_algorithm_with_image(self):
         self.library.image_source = "Sources/clock.png"
         self.library.video_source = "Sources/clocks.mp4"
-        print(f"----------{self.library.image_source}-----------")
         self.library.search_algorithm_with_image(self.library.video_source)
         assert self.library._index > 0
     
