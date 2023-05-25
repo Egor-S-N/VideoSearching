@@ -13,7 +13,7 @@ After selecting a video file from your computer, the user will be able to view, 
 
 ### The design of the application looks like this
 <p align="center">
-  <img width="546" height="427" src="https://user-images.githubusercontent.com/63055406/219950665-98ed46ea-4c17-43b5-a498-9cd64102cef4.png">
+  <img  src="https://github.com/Egor-S-N/VideoSearching/assets/63055406/ecac5ec9-f833-4ab4-a58f-c36ec6e840b6">
 </p>
 
 ---
