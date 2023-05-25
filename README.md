@@ -29,10 +29,7 @@ Processing takes place in real time, the results are shown to the user on the sc
 After pressing the button, the result of the work will be shown to the user in real time, and images with the found object will be saved in the results folder
 
 
-## Demo: 
-<!-- insert video here  -->
 
- https://user-images.githubusercontent.com/63055406/219954332-4044ed1f-ccba-44b7-ab11-1941f943d9a0.mp4
 
 
 ## 📝 License
