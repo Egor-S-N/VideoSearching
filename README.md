@@ -22,9 +22,10 @@ Processing takes place in real time, the results are shown to the user on the sc
 ## How to use
 
 1. Install or clone this project 
-2. Install the [missing libraries](/requirements.txt)
-3. Select the video source you need, as well as the image with the object you are looking for
-4. click on the button "Execute"
+2. Install the [missing libraries](/requirements.txt) through command:  `pip3 install -r requirements.txt`
+3. run program from folder: 'VideoSearching' with command: `python main.py`
+4. select video source (from files / from camera) and also select object description (image / text)
+5. click on the button "Execute"
 
 After pressing the button, the result of the work will be shown to the user in real time, and images with the found object will be saved in the results folder
 
